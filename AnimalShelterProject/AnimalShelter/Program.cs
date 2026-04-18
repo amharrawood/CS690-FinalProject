@@ -57,7 +57,7 @@ namespace AnimalShelter
 
                     do
                     {
-                        Console.WriteLine("\n-------------------------------");
+                        Console.WriteLine("\n-------------------------------\n");
                         Console.WriteLine("Veterinary Appointment Management");
                         Console.WriteLine("1. Create Appointment");
                         Console.WriteLine("2. Update Appointment");
@@ -85,8 +85,10 @@ namespace AnimalShelter
                                 break;
                         }
 
+                        Console.Write("\n-------------------------------\n");
+                        Console.Write("\nWhat's next? \n");
                         Console.WriteLine("\n1. Continue managing appointments");
-                        Console.WriteLine("2. Return to main menu");
+                        Console.WriteLine("2. Exit the program");
                         Console.Write("Enter choice: ");
                         command = ReadNonEmpty();
 
@@ -96,7 +98,7 @@ namespace AnimalShelter
 
                 }
        
-        }
+        
 
         // ---------------- Create animal records (UC1: FR1-5)--------------
         static void CreateAnimal()
@@ -281,110 +283,135 @@ namespace AnimalShelter
 
             return input;
         }
-    }
+
 
         static void CreateAppointment()
-{
-    Console.WriteLine("\n--- Create Appointment ---");
+                {
+                    Console.WriteLine("\n-------------------------------");
+                    Console.WriteLine("\nCreate Appointment\n");
 
-    Console.Write("Enter animal name: ");
-    string name = ReadNonEmpty();
+                    Console.Write("Enter animal name: ");
+                    string name = ReadNonEmpty();
+                    //Change to select from existing animals
 
-    Console.Write("Enter appointment date (YYYY-MM-DD): ");
-    string date = ReadNonEmpty();
+                    Console.Write("Enter appointment date (YYYY-MM-DD): ");
+                    string date = ReadNonEmpty();
 
-    Console.Write("Enter appointment time (HH:MM): ");
-    string time = ReadNonEmpty();
+                    Console.Write("Enter appointment time (HH:MM): ");
+                    string time = ReadNonEmpty();
 
-    string type = GetValidatedChoice(
-        "Enter appointment type (vaccine/checkup/surgery): ",
-        new[] { "vaccine", "checkup", "surgery" }
-    );
+                    string type = GetValidatedChoice(
+                        "Enter appointment type (vaccine/checkup/surgery): ",
+                        new[] { "vaccine", "checkup", "surgery" }
+                    );
 
-    Console.Write("Enter notes: ");
-    string notes = ReadNonEmpty();
+                    Console.Write("Enter veterinarian and location: ");
+                    string notes = ReadNonEmpty();
 
-    File.AppendAllText("appointments.txt",
-        $"{name}:{date}:{time}:{type}:{notes}{Environment.NewLine}");
+                    File.AppendAllText("appointments.txt",
+                        $"{name}|{date}|{time}|{type}|{notes}{Environment.NewLine}");
 
-    Console.WriteLine("Appointment created.");
-}
+                    Console.WriteLine("Appointment created.");
+                }
 
-static void UpdateAppointment()
-{
-    if (!File.Exists("appointments.txt"))
-    {
-        Console.WriteLine("No appointments found.");
-        return;
+        static void UpdateAppointment()
+                    {
+                        if (!File.Exists("appointments.txt"))
+                        {
+                            Console.WriteLine("No appointments found.");
+                            return;
+                        }
+
+                        List<string> lines = File.ReadAllLines("appointments.txt").ToList();
+
+                        Console.Write("Enter the animal name for the appointment: ");
+                        string name = ReadNonEmpty();
+
+                        int index = lines.FindIndex(l => l.StartsWith(name + "|", StringComparison.OrdinalIgnoreCase));
+
+                        if (index == -1)
+                        {
+                            Console.WriteLine("Appointment not found.");
+                            return;
+                        }
+
+                        string[] parts = lines[index].Split('|');
+
+                        string choice;
+                        do
+                        {
+                            Console.WriteLine("\n-------------------------------");
+                            Console.WriteLine("\nWhich field do you want to update?");
+                            Console.WriteLine("1. Date");
+                            Console.WriteLine("2. Time");
+                            Console.WriteLine("3. Type");
+                            Console.WriteLine("4. Vet and Location");
+                            Console.WriteLine("5. Done");
+                            Console.Write("Enter choice (1-5): ");
+
+                            choice = ReadNonEmpty();
+
+                            switch (choice)
+                            {
+                                case "1":
+                                    Console.Write("Enter new date (YYYY-MM-DD): ");
+                                    parts[1] = ReadNonEmpty();
+                                    break;
+
+                                case "2":
+                                    Console.Write("Enter new time (HH:MM): ");
+                                    parts[2] = ReadNonEmpty();
+                                    break;
+
+                                case "3":
+                                    parts[3] = GetValidatedChoice(
+                                        "Enter new type (vaccine/checkup/surgery): ",
+                                        new[] { "vaccine", "checkup", "surgery" }
+                                    );
+                                    break;
+
+                                case "4":
+                                    Console.Write("Enter new veterinarian and location: ");
+                                    parts[4] = ReadNonEmpty();
+                                    break;
+
+                                case "5":
+                                    Console.WriteLine("Saving changes...");
+                                    break;
+
+                                default:
+                                    Console.WriteLine("Invalid choice.");
+                                    break;
+                            }
+
+                        } while (choice != "5");
+
+                        lines[index] = string.Join("|", parts);
+                        File.WriteAllLines("appointments.txt", lines);
+
+                        Console.WriteLine("Appointment updated successfully.");
+                    }
+   
+            static void ViewAppointments()
+                        {
+                            Console.WriteLine("\nAll Appointments");
+
+                            if (!File.Exists("appointments.txt"))
+                            {
+                                Console.WriteLine("No appointments found.");
+                                return;
+                            }
+
+                            foreach (var line in File.ReadAllLines("appointments.txt"))
+                            {
+                                var p = line.Split('|');
+                                Console.WriteLine($"Animal: {p[0]}, Date: {p[1]}, Time: {p[2]}, Type: {p[3]}, Vet and Location: {p[4]}");
+                            }
+                        }
+                        
+   
     }
 
-    List<string> lines = File.ReadAllLines("appointments.txt").ToList();
-
-    Console.Write("Enter the animal name for the appointment: ");
-    string name = ReadNonEmpty();
-
-    int index = lines.FindIndex(l => l.StartsWith(name + ":", StringComparison.OrdinalIgnoreCase));
-
-    if (index == -1)
-    {
-        Console.WriteLine("Appointment not found.");
-        return;
-    }
-
-    string[] parts = lines[index].Split(':');
-
-    string choice;
-    do
-    {
-        Console.WriteLine("\nWhich field do you want to update?");
-        Console.WriteLine("1. Date");
-        Console.WriteLine("2. Time");
-        Console.WriteLine("3. Type");
-        Console.WriteLine("4. Notes");
-        Console.WriteLine("5. Done");
-        Console.Write("Enter choice (1-5): ");
-
-        choice = ReadNonEmpty();
-
-        switch (choice)
-        {
-            case "1":
-                Console.Write("Enter new date (YYYY-MM-DD): ");
-                parts[1] = ReadNonEmpty();
-                break;
-
-            case "2":
-                Console.Write("Enter new time (HH:MM): ");
-                parts[2] = ReadNonEmpty();
-                break;
-
-            case "3":
-                parts[3] = GetValidatedChoice(
-                    "Enter new type (vaccine/checkup/surgery): ",
-                    new[] { "vaccine", "checkup", "surgery" }
-                );
-                break;
-
-            case "4":
-                Console.Write("Enter new notes: ");
-                parts[4] = ReadNonEmpty();
-                break;
-
-            case "5":
-                Console.WriteLine("Saving changes...");
-                break;
-
-            default:
-                Console.WriteLine("Invalid choice.");
-                break;
-        }
-
-    } while (choice != "5");
-
-    lines[index] = string.Join(":", parts);
-    File.WriteAllLines("appointments.txt", lines);
-
-    Console.WriteLine("Appointment updated successfully.");
 }
 
 
