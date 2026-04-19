@@ -1,4 +1,4 @@
-Rex:dog:male:2:Complete:Complete:Overall very healthy, all checkups complete
+Rex:dog:male:2:Complete:Complete:ready
 Iris:cat:female:12:complete:complete:active
 Gertrude:dog:female:5:incomplete:complete:Healthy overall
 Penny:cat:female:1:incomplete:incomplete:Healthy young cat, friendly
@@ -6,3 +6,4 @@ Jack:dog:male:1:incomplete:incomplete:Underweight young dog, needs diet addresse
 Luna:dog:female:7:complete:complete:Healthy overall, received treatment for fleas on arrival
 Leroy:cat:male:4 months:incomplete:incomplete:Receiving treatment for ear mites, fleas, and wound on ear
 Billy:cat:male:3:incomplete:complete:active:Receiving treatment for worms otherwise healthy
+Spot:dog:male:1:incomplete:complete:active:Spot has received treatment for fleas and ticks. Friendly, social dog.
