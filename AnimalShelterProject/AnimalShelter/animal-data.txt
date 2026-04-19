@@ -7,3 +7,4 @@ Luna:dog:female:7:complete:complete:Healthy overall, received treatment for flea
 Leroy:cat:male:4 months:incomplete:incomplete:Receiving treatment for ear mites, fleas, and wound on ear
 Billy:cat:male:3:incomplete:complete:active:Receiving treatment for worms otherwise healthy
 Spot:dog:male:1:incomplete:complete:active:Spot has received treatment for fleas and ticks. Friendly, social dog.
+Greg:cat:male:5:complete:incomplete:ready:Adult male with no history of health issues
