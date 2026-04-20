@@ -27,9 +27,6 @@ namespace AnimalShelter
             File.AppendAllText(FilePath, a.ToString() + Environment.NewLine);
         }
 
-       // public AnimalSearch FindAnimal(string name)
-       // {
-       //    return LoadAnimals().FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-       // }
+
     }
 }

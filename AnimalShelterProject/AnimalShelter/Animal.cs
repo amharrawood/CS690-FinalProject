@@ -1,6 +1,9 @@
-namespace AnimalShelter
+namespace AnimalShelter;
+using Spectre.Console;
 
-{
+
+
+
     //--------Animal Class---------------
     
     public class Animal
@@ -37,7 +40,7 @@ namespace AnimalShelter
             };
         }
     
-            // ---------------- Animal Methods ----------------
+        // ---------------- Animal Methods ----------------
         public void CreateAnimal()
         {
             AnimalFileManager animalFileManager;
@@ -184,4 +187,3 @@ namespace AnimalShelter
        
         
     }
-}
