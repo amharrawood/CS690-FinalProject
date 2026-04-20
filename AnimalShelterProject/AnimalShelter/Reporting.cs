@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Spectre.Console;
 
 namespace AnimalShelter
 {
@@ -9,9 +10,9 @@ namespace AnimalShelter
         private readonly AnimalFileManager animalFileManager = new AnimalFileManager();
         private readonly AppointmentFileManager appointmentFileManager = new AppointmentFileManager();
 
-        //Species Filter
+        //Species Filter Assiting List
         
-        private List<Animal> FilterBySpecies(List<Animal> animals, string species)
+       private List<Animal> FilterBySpecies(List<Animal> animals, string species)
         {
             species = species.ToLower();
 
@@ -23,75 +24,19 @@ namespace AnimalShelter
             };
         }
 
-        //Date Range Adjustment
-
-        private bool TryParseDate(string input, out DateTime date)
+        public void ReportAnimalsAdoptable()
         {
-            return DateTime.TryParse(input, out date);
-        }              
-
-            private List<Appointment> FilterAppointmentsBySpecies(List<Appointment> appts, string species)
-            {
-                var animals = animalFileManager.LoadAnimals();
-
-                // Build a lookup: animal name → species
-                var speciesLookup = animals.ToDictionary(a => a.Name.ToLower(), a => a.Species.ToLower());
-
-                species = species.ToLower();
-
-                return appts.Where(a =>
-                {
-                    if (!speciesLookup.TryGetValue(a.AnimalName.ToLower(), out var animalSpecies))
-                        return false; // appointment for unknown animal
-
-                    return species switch
-                    {
-                        "dog" => animalSpecies == "dog",
-                        "cat" => animalSpecies == "cat",
-                        _ => true // both
-                    };
-                }).ToList();
-            }
-
-
-
-        private List<Appointment> FilterByDateRange(List<Appointment> appts, DateTime start, DateTime end)
-        {
-            return appts
-                .Where(a => DateTime.TryParse(a.Date, out var d) && d >= start && d <= end)
-                .OrderBy(a => a.Date)
-                .ThenBy(a => a.Time)
-                .ToList();
-        }            
-
-
-
-        // Animal Reports
-
-        public void ReportAnimalsByStatus(string species)
-        {
+            
+            string species = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("[yellow]Filter by species[/]")
+                                .AddChoices("dog", "cat", "both"));
+            
+            
             var animals = animalFileManager.LoadAnimals();
             animals = FilterBySpecies(animals, species);
 
-            if (animals.Count == 0)
-            {
-                Console.WriteLine("No animals found for this species filter.");
-                return;
-            }
-
-            var grouped = animals.GroupBy(a => a.Status);
-
-            Console.WriteLine($"\nAnimals by Status ({species}):");
-            foreach (var group in grouped)
-            {
-                Console.WriteLine($"{group.Key}: {group.Count()}");
-            }
-        }
-
-        public void ReportAnimalsAdoptable(string species)
-        {
-            var animals = animalFileManager.LoadAnimals();
-            animals = FilterBySpecies(animals, species);
+            
 
             var adoptable = animals.Where(a => a.Status == "ready").ToList();
 
@@ -102,89 +47,114 @@ namespace AnimalShelter
                 return;
             }
 
-            foreach (var a in adoptable)
-            {
-                Console.WriteLine($"{a.Name} ({a.Species})");
-            }
+            AnsiConsole.Write(new Rule("[blue]Animals Ready to Adopt[/]").Centered());
+            
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn("[yellow]Name[/]")
+                .AddColumn("[yellow]Species[/]");
+
+
+            foreach (var a in animals)
+                table.AddRow(a.Name, a.Species);
+
+            AnsiConsole.Write(table);
         }
 
-        public void ReportAnimalsNeedingVaccines(string species)
+       
+       
+       public void ReportAnimalsNeedingVaccines()
         {
-            var animals = animalFileManager.LoadAnimals();
-            animals = FilterBySpecies(animals, species);
+            
+            string species = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[yellow]Filter by species[/]")
+                    .AddChoices("dog", "cat", "both"));
+            
+            
+            var animals = animalFileManager.LoadAnimals()
+                .Where(a => a.VaccineStatus == "incomplete")
+                .ToList();
 
-            var needing = animals.Where(a => a.VaccineStatus == "incomplete").ToList();
-
-            Console.WriteLine($"\nAnimals Needing Vaccines ({species}):");
-
-            if (needing.Count == 0)
+            if (animals.Count == 0)
             {
-                Console.WriteLine("None.");
+                AnsiConsole.MarkupLine("[green]All animals are vaccinated[/]");
                 return;
             }
+            
+            AnsiConsole.Write(new Rule("[blue]Animals Needing Vaccines[/]").Centered());
+            
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn("[yellow]Name[/]")
+                .AddColumn("[yellow]Species[/]");
 
-            foreach (var a in needing)
-                Console.WriteLine($"{a.Name} ({a.Species})");
+
+            foreach (var a in animals)
+                table.AddRow(a.Name, a.Species);
+
+            AnsiConsole.Write(table);
         }
 
+       
         // Appointment report
    
          public void ReportAppointmentsByDateRangeAndSpecies()
             {
-                Console.Write("Enter start date (YYYY-MM-DD): ");
-                string startInput = ReadNonEmpty();
+                    AnsiConsole.Write(new Rule("[blue]Appointments by Date Range + Species[/]").Centered());
 
-                Console.Write("Enter end date (YYYY-MM-DD): ");
-                string endInput = ReadNonEmpty();
+                        string start = AnsiConsole.Ask<string>("[yellow]Start date (YYYY-MM-DD):[/]");
+                        string end = AnsiConsole.Ask<string>("[yellow]End date (YYYY-MM-DD):[/]");
 
-                if (!TryParseDate(startInput, out var start) ||
-                    !TryParseDate(endInput, out var end))
-                {
-                    Console.WriteLine("Invalid date format.");
-                    return;
-                }
+                        DateTime startDate = DateTime.Parse(start);
+                        DateTime endDate = DateTime.Parse(end);
 
-                if (end < start)
-                {
-                    Console.WriteLine("End date must be after start date.");
-                    return;
-                }
+                        string species = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("[yellow]Filter by species[/]")
+                                .AddChoices("dog", "cat", "both"));
 
-                Console.WriteLine("\nFilter by species:");
-                Console.WriteLine("1. Dog");
-                Console.WriteLine("2. Cat");
-                Console.WriteLine("3. Both");
-                Console.Write("Enter choice: ");
+                        var appts = appointmentFileManager.LoadAppointments();
 
-                string speciesChoice = ReadNonEmpty();
+                        // Filter by date
+                        appts = appts
+                            /*.Where(a => DateTime.TryParse(a.Date, out var d) && d >= startDate && d <= endDate)
+                            .ToList();*/
+                            .Where(a => a.Date >= startDate && a.Date <= endDate)
+                            .ToList();
 
-                string species = speciesChoice switch
-                {
-                    "1" => "dog",
-                    "2" => "cat",
-                    _ => "both"
-                };
+                        // Filter by species
+                        var animals = animalFileManager.LoadAnimals();
+                        var lookup = animals.ToDictionary(a => a.Name.ToLower(), a => a.Species.ToLower());
 
-                var appts = appointmentFileManager.LoadAppointments();
+                        if (species != "both")
+                        {
+                            appts = appts
+                                .Where(a => lookup.TryGetValue(a.AnimalName.ToLower(), out var s) && s == species)
+                                .ToList();
+                        }
 
-                // Apply both filters
-                appts = FilterByDateRange(appts, start, end);
-                appts = FilterAppointmentsBySpecies(appts, species);
+                        if (appts.Count == 0)
+                        {
+                            AnsiConsole.MarkupLine("[red]No appointments found for this filter[/]");
+                            return;
+                        }
 
-                Console.WriteLine($"\nAppointments ({species}) from {start:yyyy-MM-dd} to {end:yyyy-MM-dd}:");
+                        var table = new Table()
+                            .Border(TableBorder.Rounded)
+                            .AddColumn("[yellow]Date[/]")
+                            .AddColumn("[yellow]Time[/]")
+                            .AddColumn("[yellow]Animal[/]")
+                            .AddColumn("[yellow]Type[/]");
 
-                if (appts.Count == 0)
-                {
-                    Console.WriteLine("No appointments found.");
-                    return;
-                }
+                        foreach (var a in appts)
+                            table.AddRow(a.Date.ToString("MM/dd/yyyy"), a.Time, a.AnimalName, a.Type);
 
-                foreach (var a in appts)
-                {
-                    Console.WriteLine($"{a.Date} {a.Time} - {a.AnimalName} ({a.Type})");
-                }
-            }
-    
+                        AnsiConsole.Write(table);
+                    }
+
+
+
         public string ReadNonEmpty()
         {
             string? input;

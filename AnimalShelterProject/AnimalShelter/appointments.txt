@@ -1,3 +1,5 @@
-Leroy|2026-05-03|10:15|surgery|Dr. Harrawood Southport Clinic
-Rex|2026-06-05|01:15|checkup|Dr. Harrawood Southport Clinic
-Spot|2016-05-16|10:00|vaccine|Dr. Smith Indianapolis Veterinary Clinic
+Leroy|05/03/2026 00:00:00|10:15|Checkup|Dr. Harrawood Southport Clinic
+Rex|06/05/2026 00:00:00|01:15|checkup|Dr. Harrawood Southport Clinic
+Spot|06/30/2026 00:00:00|10:00|vaccine|Dr. Smith Indianapolis Veterinary Clinic
+Greg|07/07/2026 00:00:00|1:00 PM|Checkup|Needs labs
+Spot|05/18/2026 00:00:00|11:00 AM|Surgery|Removing mast cell tumor on left front paw
