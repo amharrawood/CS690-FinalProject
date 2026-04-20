@@ -49,7 +49,7 @@ using Spectre.Console;
             Console.Write("Enter name: ");
             string name = ReadNonEmpty();
 
-            string species = GetValidatedChoice("Species (dog/cat): ", new[] { "dog", "cat" });
+           string species = GetValidatedChoice("Species (dog/cat): ", new[] { "dog", "cat" });
             string sex = GetValidatedChoice("Sex (male/female): ", new[] { "male", "female" });
 
             Console.Write("Age: ");
@@ -82,76 +82,108 @@ using Spectre.Console;
             Console.WriteLine("Animal added.");
         }
 
-        public void UpdateAnimal()
-        {
-            AnimalFileManager animalFileManager;
-            animalFileManager = new AnimalFileManager();           
-                       
-            Console.Write("Enter animal name: ");
-            string name = ReadNonEmpty();
 
-            var animals = animalFileManager.LoadAnimals();
-            var animal = animals.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+public void UpdateAnimal()
+{
+    var animalFileManager = new AnimalFileManager();
+    var animals = animalFileManager.LoadAnimals();
 
-            if (animal == null)
-            {
-                Console.WriteLine("Animal not found.");
-                return;
-            }
+    if (animals.Count == 0)
+    {
+        AnsiConsole.MarkupLine("[red]No animals found to update.[/]");
+        return;
+    }
 
-            string choice;
-            do
-            {
-                Console.WriteLine("\n1. Species");
-                Console.WriteLine("2. Sex");
-                Console.WriteLine("3. Age");
-                Console.WriteLine("4. Vaccine");
-                Console.WriteLine("5. Spay/Neuter");
-                Console.WriteLine("6. Status");
-                Console.WriteLine("7. Health History");
-                Console.WriteLine("8. Behavior and Personality");
-                Console.WriteLine("9. Done");
-                Console.Write("Enter choice: ");
+    // Build list of names for the dropdown
+    var animalNames = animals.Select(a => a.Name).ToList();
 
-                choice = ReadNonEmpty();
+    // Drop-down menu to select animal
+    var selectedName = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+            .Title("[yellow]Select an animal to update[/]")
+            .PageSize(10)
+            .AddChoices(animalNames));
 
-                switch (choice)
+    var animal = animals.First(a => a.Name == selectedName);
+
+    bool done = false;
+
+    while (!done)
+    {
+        var fieldChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title($"Updating [green]{animal.Name}[/]. Choose a field:")
+                .AddChoices(new[]
                 {
-                    case "1":
-                        animal.Species = GetValidatedChoice("Species (dog/cat): ", new[] { "dog", "cat" });
-                        break;
-                    case "2":
-                        animal.Sex = GetValidatedChoice("Sex (male/female): ", new[] { "male", "female" });
-                        break;
-                    case "3":
-                        Console.Write("Age: ");
-                        animal.Age = ReadNonEmpty();
-                        break;
-                    case "4":
-                        animal.VaccineStatus = GetValidatedChoice("Vaccine (complete/incomplete): ", new[] { "complete", "incomplete" });
-                        break;
-                    case "5":
-                        animal.ReproStatus = GetValidatedChoice("Spay/Neuter (complete/incomplete): ", new[] { "complete", "incomplete" });
-                        break;
-                    case "6":
-                        animal.Status = GetValidatedChoice("Status (active/ready/adopted): ", new[] { "active", "ready", "adopted" });
-                        break;
-                    case "7":
-                        Console.Write("Health History: ");
-                        animal.HealthHistory = ReadNonEmpty();
-                        break;
-                    case "8":
-                        Console.Write("Behavior and Personality: ");
-                        animal.Behavior = ReadNonEmpty();
-                        break;
-                }
+                    "Species",
+                    "Sex",
+                    "Age",
+                    "Vaccine Status",
+                    "Spay/Neuter Status",
+                    "Shelter Status",
+                    "Health History",
+                    "Behavior and Personality",
+                    "Done"
+                }));
 
-            } while (choice != "9");
+        switch (fieldChoice)
+        {
+            case "Species":
+                animal.Species = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select species")
+                        .AddChoices("dog", "cat"));
+                break;
 
-            animalFileManager.SaveAnimals(animals);
-            Console.WriteLine("Animal updated.");
+            case "Sex":
+                animal.Sex = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select sex")
+                        .AddChoices("male", "female"));
+                break;
+
+            case "Age":
+                animal.Age = AnsiConsole.Ask<string>("Enter new age:");
+                break;
+
+            case "Vaccine Status":
+                animal.VaccineStatus = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select vaccine status")
+                        .AddChoices("complete", "incomplete"));
+                break;
+
+            case "Spay/Neuter Status":
+                animal.ReproStatus = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select spay/neuter status")
+                        .AddChoices("complete", "incomplete"));
+                break;
+
+            case "Shelter Status":
+                animal.Status = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select shelter status")
+                        .AddChoices("active", "ready", "adopted"));
+                break;
+
+            case "Health History":
+                animal.HealthHistory = AnsiConsole.Ask<string>("Enter updated health history:");
+                break;
+
+            case "Behavior and Personality":
+                animal.Behavior = AnsiConsole.Ask<string>("Enter updated behavior/personality:");
+                break;
+
+            case "Done":
+                done = true;
+                break;
         }
-    
+    }
+
+    animalFileManager.SaveAnimals(animals);
+    AnsiConsole.MarkupLine("[green]Animal updated successfully![/]");
+}
     
         public string ReadNonEmpty()
         {

@@ -9,47 +9,80 @@ public class ConsoleUI {
     
     public void show() {
 
+           ShowStartupScreen();
+           
             while (true)
             {
-                Console.WriteLine("\n1. Manage Animals");
-                Console.WriteLine("2. Manage Appointments");
-                Console.WriteLine("3. Access Reports");
-                Console.WriteLine("4. Exit");
-                Console.Write("Enter choice: ");
-
-                string choice = Console.ReadLine();
+              
+                    var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[yellow]Main Menu[/]")
+                        .HighlightStyle("cyan")
+                        .AddChoices(new[]
+                        {
+                            "Manage Animals",
+                            "Manage Appointments",
+                            "Reporting",
+                            "Exit"
+                        }));
 
                 switch (choice)
                 {
-                    case "1":
+                    case "Manage Animals":
                         AnimalMenu();
                         break;
-                    case "2":
+
+                    case "Manage Appointments":
                         AppointmentMenu();
                         break;
-                    case "3":
+
+                    case "Reporting":
                         ReportingMenu();
                         break;
-                    case "4":
+
+                    case "Exit":
+                        AnsiConsole.MarkupLine("[green]Goodbye![/]");
                         return;
                 }
             }
         }
 
+        
+         static void ShowStartupScreen()
+        {
+            AnsiConsole.Clear();
+
+            AnsiConsole.Write(
+                new FigletText("Clara's Animal Shelter")
+                    .Centered()
+                    .Color(Color.CadetBlue));
+
+            AnsiConsole.Write(
+                new Rule("[yellow]Management System[/]")
+                    .RuleStyle("grey")
+                    .Centered());
+
+            AnsiConsole.MarkupLine("[grey]Press any key to continue...[/]");
+            Console.ReadKey(true);
+            AnsiConsole.Clear();
+        }
+        
+        
+        
+        
         public static void AnimalMenu()
         {
             Animal animal;
             animal = new Animal();
             
-            Console.WriteLine("\n1. Create Animal");
-            Console.WriteLine("2. Update Animal");
-            Console.WriteLine("3. Back");
-            Console.Write("Enter choice: ");
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[green]Animal Management[/]")
+                    .AddChoices("Create Animal", "Update Animal", "Back"));
 
-            string choice = Console.ReadLine();
-
-            if (choice == "1") animal.CreateAnimal();
-            if (choice == "2") animal.UpdateAnimal();
+            if (choice == "Create Animal") animal.CreateAnimal();
+            if (choice == "Update Animal") animal.UpdateAnimal();
+            if (choice == "Back") return;
         }
 
         public static void AppointmentMenu()
@@ -57,17 +90,15 @@ public class ConsoleUI {
             Appointment appointment;
             appointment = new Appointment();
 
-            Console.WriteLine("\n1. Create Appointment");
-            Console.WriteLine("2. Update Appointment");
-            Console.WriteLine("3. View Appointments");
-            Console.WriteLine("4. Back");
-            Console.Write("Enter choice: ");
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[green]Appointment Management[/]")
+                    .AddChoices("Create Appointment", "Update Appointment", "View Appointments", "Back"));
 
-            string choice = Console.ReadLine();
-
-            if (choice == "1") appointment.CreateAppointment();
-            if (choice == "2") appointment.UpdateAppointment();
-            if (choice == "3") appointment.ViewAppointments();
+            if (choice == "Create Appointment") appointment.CreateAppointment();
+            if (choice == "Update Appointment") appointment.UpdateAppointment();
+            if (choice == "View Appointments") appointment.ViewAppointments();
+            if (choice == "Back") return;
         }
 
         public static void ReportingMenu()
@@ -75,60 +106,35 @@ public class ConsoleUI {
             ReportManager reportManager;
             reportManager = new ReportManager();
             
-            Console.WriteLine("\nReporting Menu");
-            Console.WriteLine("1. Animals Ready for Adoption");
-            Console.WriteLine("2. Animals Needing Vaccines");
-            Console.WriteLine("3. Upcoming Appointments");
-            Console.WriteLine("4. Back");
-            Console.Write("Enter choice: ");
-
-            string choice = reportManager.ReadNonEmpty();
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[blue]Reporting[/]")
+                    .AddChoices(
+                        "Animals Ready to Adopt",
+                        "Animals Needing Vaccines",
+                        "Appointments by Date Range + Species",
+                        "Back"));
 
             switch (choice)
             {
-                case "1":
+            case "Animals Ready to Adopt":
 
-                Console.WriteLine("\nFilter by species:");
-                    Console.WriteLine("1. Dog");
-                    Console.WriteLine("2. Cat");
-                    Console.WriteLine("3. Both");
-                    Console.Write("Enter choice: ");
-
-                    string speciesChoice = reportManager.ReadNonEmpty();
-
-                    string species = speciesChoice switch
-                    {
-                        "1" => "dog",
-                        "2" => "cat",
-                        _ => "both"
-                    };
-                    reportManager.ReportAnimalsAdoptable(species);
+                    reportManager.ReportAnimalsAdoptable();
                     break;
                     
-                    case "2":
+            case "Animals Needing Vaccines":
 
-                    Console.WriteLine("\nFilter by species:");
-                    Console.WriteLine("1. Dog");
-                    Console.WriteLine("2. Cat");
-                    Console.WriteLine("3. Both");
-                    Console.Write("Enter choice: ");
-
-                    string speciesChoice2 = reportManager.ReadNonEmpty();
-
-                    string species2 = speciesChoice2 switch
-                    {
-                        "1" => "dog",
-                        "2" => "cat",
-                        _ => "both"
-                    };
-                    reportManager.ReportAnimalsNeedingVaccines(species2);
-        
-                    
+                    reportManager.ReportAnimalsNeedingVaccines();                
                     break;
 
-                case "3":
+            case "Appointments by Date Range + Species":
+
                     reportManager.ReportAppointmentsByDateRangeAndSpecies();
                     break;
+
+            case "Back": return;
+            
+                        
             }
         }   
    

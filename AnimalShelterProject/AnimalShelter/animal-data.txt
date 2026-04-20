@@ -1,5 +1,7 @@
-Billy:cat:male:3:incomplete:complete:active:Receiving treatment for worms otherwise healthy:Friendly
+Billy:cat:male:3:incomplete:complete:active:Completed treatment for worms:Friendly
 Spot:dog:male:1:incomplete:complete:active:Spot has received treatment for fleas and ticks:Friendly, social dog.
 Greg:cat:male:5:complete:incomplete:ready:Adult male with no history of health issues:Shy at first
 Scooby:dog:male:2:incomplete:incomplete:active:No issues:Outgoing and likes treats
-Rex:dog:male:2:complete:complete:ready:History of hot spots:Very friendly
+Rex:dog:male:2:incomplete:complete:ready:History of hot spots:Very friendly
+Blue:dog:female:3:complete:complete:ready:Spay in 2024:Curious and playful. Good with kids.
+Lucy:cat:female:5:complete:complete:ready:Spay complete 2020, Vaccines completed 4/1/2026:Sweet can that loves catnip
