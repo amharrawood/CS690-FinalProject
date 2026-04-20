@@ -13,10 +13,11 @@ namespace AnimalShelter
         public string ReproStatus { get; set; }
         public string Status { get; set; }
         public string HealthHistory { get; set; }
+        public string Behavior { get; set; }
 
         public override string ToString()
         {
-            return $"{Name}:{Species}:{Sex}:{Age}:{VaccineStatus}:{ReproStatus}:{Status}:{HealthHistory}";
+            return $"{Name}:{Species}:{Sex}:{Age}:{VaccineStatus}:{ReproStatus}:{Status}:{HealthHistory}:{Behavior}";
         }
 
         public static Animal FromString(string line)
@@ -31,7 +32,8 @@ namespace AnimalShelter
                 VaccineStatus = p[4],
                 ReproStatus = p[5],
                 Status = p[6],
-                HealthHistory = p[7]
+                HealthHistory = p[7],
+                Behavior = p[8]
             };
         }
     
@@ -57,6 +59,9 @@ namespace AnimalShelter
             Console.Write("Health history: ");
             string health = ReadNonEmpty();
 
+            Console.Write("Behavior and personality: ");
+            string behavior = ReadNonEmpty();
+
             var animal = new Animal
             {
                 Name = name,
@@ -66,7 +71,8 @@ namespace AnimalShelter
                 VaccineStatus = vaccine,
                 ReproStatus = repro,
                 Status = status,
-                HealthHistory = health
+                HealthHistory = health,
+                Behavior = behavior
             };
 
             animalFileManager.AddAnimal(animal);
@@ -99,8 +105,9 @@ namespace AnimalShelter
                 Console.WriteLine("4. Vaccine");
                 Console.WriteLine("5. Spay/Neuter");
                 Console.WriteLine("6. Status");
-                Console.WriteLine("7. Health");
-                Console.WriteLine("8. Done");
+                Console.WriteLine("7. Health History");
+                Console.WriteLine("8. Behavior and Personality");
+                Console.WriteLine("9. Done");
                 Console.Write("Enter choice: ");
 
                 choice = ReadNonEmpty();
@@ -127,12 +134,16 @@ namespace AnimalShelter
                         animal.Status = GetValidatedChoice("Status (active/ready/adopted): ", new[] { "active", "ready", "adopted" });
                         break;
                     case "7":
-                        Console.Write("Health: ");
+                        Console.Write("Health History: ");
                         animal.HealthHistory = ReadNonEmpty();
+                        break;
+                    case "8":
+                        Console.Write("Behavior and Personality: ");
+                        animal.Behavior = ReadNonEmpty();
                         break;
                 }
 
-            } while (choice != "8");
+            } while (choice != "9");
 
             animalFileManager.SaveAnimals(animals);
             Console.WriteLine("Animal updated.");

@@ -175,7 +175,7 @@ namespace AnimalShelter
 
                 if (appts.Count == 0)
                 {
-                    Console.WriteLine("No appointments found for this filter.");
+                    Console.WriteLine("No appointments found.");
                     return;
                 }
 
@@ -185,6 +185,40 @@ namespace AnimalShelter
                 }
             }
     
+        public string ReadNonEmpty()
+        {
+            string? input;
+            do
+            {
+                input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input))
+                    Console.WriteLine("Input cannot be empty.");
+            }
+            while (string.IsNullOrWhiteSpace(input));
+
+            return input;
+        }
+
+        public string GetValidatedChoice(string prompt, string[] valid)
+        {
+            string input;
+            do
+            {
+                Console.Write(prompt);
+                input = ReadNonEmpty().ToLower();
+
+                if (!valid.Contains(input))
+                    Console.WriteLine("Invalid option.");
+            }
+
+            while (!valid.Contains(input));
+
+            return input;
+        }
+    
+       
+
+
     
     }
 }
