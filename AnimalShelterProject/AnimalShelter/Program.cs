@@ -82,7 +82,7 @@ namespace AnimalShelter
             reportManager = new ReportManager();
             
             Console.WriteLine("\nReporting Menu");
-            Console.WriteLine("1. Animals by Status");
+            Console.WriteLine("1. Animals Ready for Adoption");
             Console.WriteLine("2. Animals Needing Vaccines");
             Console.WriteLine("3. Upcoming Appointments");
             Console.WriteLine("4. Back");
