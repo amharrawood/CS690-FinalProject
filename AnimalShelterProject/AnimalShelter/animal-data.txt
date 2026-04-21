@@ -5,3 +5,6 @@ Scooby:dog:male:2:incomplete:incomplete:active:No issues:Outgoing and likes trea
 Rex:dog:male:2:incomplete:complete:ready:History of hot spots:Very friendly
 Blue:dog:female:3:complete:complete:ready:Spay in 2024:Curious and playful. Good with kids.
 Lucy:cat:female:5:complete:complete:ready:Spay complete 2020, Vaccines completed 4/1/2026:Sweet can that loves catnip
+Peanut:cat:female:1:complete:complete:ready:Spay completed 12/2025:Very playful, but shy at first. 
+Maggie:cat:female:6:incomplete:incomplete:active:Found at local carwash. Appears healthy, waiting for checkup.:Allows staff to hold her and purrs loudly.
+Spots:cat:male:2:incomplete:incomplete:active:Formerly part of a community cat colony. Arrived with injury to leg. :Friendly, allows petting. 
