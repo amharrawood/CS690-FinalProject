@@ -40,7 +40,6 @@ namespace AnimalShelter
 
             var adoptable = animals.Where(a => a.Status == "ready").ToList();
 
-            Console.WriteLine("\nAnimals Ready to Adopt:");
             if (adoptable.Count == 0)
             {
                 Console.WriteLine("No animals ready to adopt at this time.");
@@ -101,13 +100,29 @@ namespace AnimalShelter
    
          public void ReportAppointmentsByDateRangeAndSpecies()
             {
-                    AnsiConsole.Write(new Rule("[blue]Appointments by Date Range + Species[/]").Centered());
+                    AnsiConsole.Write(new Rule("[blue]Upcoming Appointments by Date Range + Species[/]").Centered());
 
-                        string start = AnsiConsole.Ask<string>("[yellow]Start date (YYYY-MM-DD):[/]");
-                        string end = AnsiConsole.Ask<string>("[yellow]End date (YYYY-MM-DD):[/]");
 
-                        DateTime startDate = DateTime.Parse(start);
-                        DateTime endDate = DateTime.Parse(end);
+                        DateTime startDate;
+                        DateTime endDate;
+
+                        startDate = AnsiConsole.Prompt(
+                                new TextPrompt<DateTime>("Enter new date (MM/DD/YYYY):")
+                                    .Validate(d =>
+                                    {
+                                        return d >= DateTime.Today
+                                            ? ValidationResult.Success()
+                                            : ValidationResult.Error("[red]Date cannot be in the past[/]");
+                                    }))
+                                    ;
+                        endDate = AnsiConsole.Prompt(
+                                new TextPrompt<DateTime>("Enter new date (MM/DD/YYYY):")
+                                    .Validate(d =>
+                                    {
+                                        return d >= DateTime.Today
+                                            ? ValidationResult.Success()
+                                            : ValidationResult.Error("[red]Date cannot be in the past[/]");
+                                    }));
 
                         string species = AnsiConsole.Prompt(
                             new SelectionPrompt<string>()
@@ -118,8 +133,7 @@ namespace AnimalShelter
 
                         // Filter by date
                         appts = appts
-                            /*.Where(a => DateTime.TryParse(a.Date, out var d) && d >= startDate && d <= endDate)
-                            .ToList();*/
+
                             .Where(a => a.Date >= startDate && a.Date <= endDate)
                             .ToList();
 
@@ -152,41 +166,6 @@ namespace AnimalShelter
 
                         AnsiConsole.Write(table);
                     }
-
-
-
-        public string ReadNonEmpty()
-        {
-            string? input;
-            do
-            {
-                input = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(input))
-                    Console.WriteLine("Input cannot be empty.");
-            }
-            while (string.IsNullOrWhiteSpace(input));
-
-            return input;
-        }
-
-        public string GetValidatedChoice(string prompt, string[] valid)
-        {
-            string input;
-            do
-            {
-                Console.Write(prompt);
-                input = ReadNonEmpty().ToLower();
-
-                if (!valid.Contains(input))
-                    Console.WriteLine("Invalid option.");
-            }
-
-            while (!valid.Contains(input));
-
-            return input;
-        }
-    
-       
 
 
     

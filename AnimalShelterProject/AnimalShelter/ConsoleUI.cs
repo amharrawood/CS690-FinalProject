@@ -112,7 +112,7 @@ public class ConsoleUI {
                     .AddChoices(
                         "Animals Ready to Adopt",
                         "Animals Needing Vaccines",
-                        "Appointments by Date Range + Species",
+                        "Upcoming Appointments by Date Range + Species",
                         "Back"));
 
             switch (choice)
@@ -127,7 +127,7 @@ public class ConsoleUI {
                     reportManager.ReportAnimalsNeedingVaccines();                
                     break;
 
-            case "Appointments by Date Range + Species":
+            case "Upcoming Appointments by Date Range + Species":
 
                     reportManager.ReportAppointmentsByDateRangeAndSpecies();
                     break;

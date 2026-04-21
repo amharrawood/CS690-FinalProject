@@ -56,16 +56,15 @@ using Spectre.Console;
                     return;
                 }
 
-                // Animal dropdown
-                    var animalName = AnsiConsole.Prompt(
+                var animalName = AnsiConsole.Prompt(
                         new SelectionPrompt<string>()
                             .Title("[yellow]Select an animal[/]")
                             .PageSize(10)
                             .AddChoices(animals.Select(a => a.Name)));
 
-                    // Date prompt
+
                     var date = AnsiConsole.Prompt(
-                        new TextPrompt<DateTime>("[yellow]Enter appointment date (YYYY-MM-DD):[/]")
+                        new TextPrompt<DateTime>("[yellow]Enter appointment date (YYYY/MM/DD):[/]")
                             .Validate(d =>
                             {
                                 return d >= DateTime.Today
@@ -85,8 +84,8 @@ using Spectre.Console;
                             .Title("[yellow]Select appointment type[/]")
                             .AddChoices("Vaccine", "Checkup", "Surgery"));
 
-                    // Notes (optional)
-                    var notes = AnsiConsole.Ask<string>("[yellow]Notes (optional):[/]");
+                    // Notes 
+                    var notes = AnsiConsole.Ask<string>("[yellow]Veterinarian and Locaton:[/]");
 
                     // Create appointment
                     var appt = new Appointment
@@ -117,13 +116,11 @@ using Spectre.Console;
             return;
         }
 
-        // Build dropdown labels
         var labels = appts
             
             .Select(a => $"{a.AnimalName} — {a.Date:MM/dd/yyyy} — {a.Time} — {a.Type}")
             .ToList();
 
-        // User selects appointment
         var selectedLabel = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("[yellow]Select an appointment to update[/]")
@@ -145,7 +142,14 @@ using Spectre.Console;
             switch (newfield)
             {
                 case "Date":
-                    appt.Date = AnsiConsole.Ask<DateTime>("Enter new date (MM/DD/YYYY):");
+                    appt.Date = AnsiConsole.Prompt(
+                        new TextPrompt<DateTime>("Enter new date (MM/DD/YYYY):")
+                        .Validate(d =>
+                            {
+                                return d >= DateTime.Today
+                                    ? ValidationResult.Success()
+                                    : ValidationResult.Error("[red]Date cannot be in the past[/]");
+                            }));
                     break;
 
                 case "Time":
@@ -163,7 +167,7 @@ using Spectre.Console;
                     break;
 
                 case "Notes":
-                    appt.Notes = AnsiConsole.Ask<string>("Enter new notes:");
+                    appt.Notes = AnsiConsole.Ask<string>("Enter new Veterinarian and Location:");
                     break;
 
                 case "Done":
@@ -198,36 +202,5 @@ using Spectre.Console;
             }
         }
         
-   
-            public string ReadNonEmpty()
-        {
-            string? input;
-            do
-            {
-                input = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(input))
-                    Console.WriteLine("Input cannot be empty.");
-            }
-            while (string.IsNullOrWhiteSpace(input));
-
-            return input;
-        }
-
-        public string GetValidatedChoice(string prompt, string[] valid)
-        {
-            string input;
-            do
-            {
-                Console.Write(prompt);
-                input = ReadNonEmpty().ToLower();
-
-                if (!valid.Contains(input))
-                    Console.WriteLine("Invalid option.");
-            }
-
-            while (!valid.Contains(input));
-
-            return input;
-        }
    
     }
