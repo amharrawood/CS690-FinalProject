@@ -28,9 +28,9 @@ namespace AnimalShelter
         {
             
             string species = AnsiConsole.Prompt(
-                            new SelectionPrompt<string>()
-                                .Title("[yellow]Filter by species[/]")
-                                .AddChoices("dog", "cat", "both"));
+                new SelectionPrompt<string>()
+                    .Title("[yellow]Filter by species[/]")
+                    .AddChoices("dog", "cat", "both"));
             
             
             var animals = animalFileManager.LoadAnimals();
@@ -74,6 +74,8 @@ namespace AnimalShelter
             var animals = animalFileManager.LoadAnimals()
                 .Where(a => a.VaccineStatus == "incomplete")
                 .ToList();
+           
+            animals = FilterBySpecies(animals, species);
 
             if (animals.Count == 0)
             {

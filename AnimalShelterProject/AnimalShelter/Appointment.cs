@@ -14,33 +14,33 @@ using Spectre.Console;
         public string Notes { get; set; }
 
         public Appointment()
-        {
-            AnimalName = "";
-            Date = DateTime.MinValue;
-            Time = "";
-            Type = "";
-            Notes = "";
-        }
+            {
+                AnimalName = "";
+                Date = DateTime.MinValue;
+                Time = "";
+                Type = "";
+                Notes = "";
+            }
 
 
         public override string ToString()
-        {
-            return $"{AnimalName}|{Date}|{Time}|{Type}|{Notes}";
-        }
+            {
+                return $"{AnimalName}|{Date}|{Time}|{Type}|{Notes}";
+            }
 
         public static Appointment FromString(string line)
-        {
-            var p = line.Split('|');
-            return new Appointment
             {
-                AnimalName = p[0],
-                Date = DateTime.TryParse(p[1], out var d) ? d : DateTime.MinValue,
-                Time = p[2],
-                Type = p[3],
-                Notes = p[4]
-            };
-        }
-   
+                var p = line.Split('|');
+                return new Appointment
+                {
+                    AnimalName = p[0],
+                    Date = DateTime.TryParse(p[1], out var d) ? d : DateTime.MinValue,
+                    Time = p[2],
+                    Type = p[3],
+                    Notes = p[4]
+                };
+            }
+    
 
         public void CreateAppointment()
             {
@@ -103,104 +103,104 @@ using Spectre.Console;
                 }
 
         public void UpdateAppointment()
-        {
-            
-            AppointmentFileManager appointmentFileManager;
-            appointmentFileManager = new AppointmentFileManager();
-            
-            var appts = appointmentFileManager.LoadAppointments();
+                {
+                    
+                    AppointmentFileManager appointmentFileManager;
+                    appointmentFileManager = new AppointmentFileManager();
+                    
+                    var appts = appointmentFileManager.LoadAppointments();
 
-             if (appts.Count == 0)
-        {
-            AnsiConsole.MarkupLine("[red]No appointments found.[/]");
-            return;
-        }
+                    if (appts.Count == 0)
+                {
+                    AnsiConsole.MarkupLine("[red]No appointments found.[/]");
+                    return;
+                }
 
-        var labels = appts
-            
-            .Select(a => $"{a.AnimalName} — {a.Date:MM/dd/yyyy} — {a.Time} — {a.Type}")
-            .ToList();
+                var labels = appts
+                    
+                    .Select(a => $"{a.AnimalName} — {a.Date:MM/dd/yyyy} — {a.Time} — {a.Type}")
+                    .ToList();
 
-        var selectedLabel = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("[yellow]Select an appointment to update[/]")
-                .PageSize(10)
-                .AddChoices(labels));
+                var selectedLabel = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[yellow]Select an appointment to update[/]")
+                        .PageSize(10)
+                        .AddChoices(labels));
 
-        var appt = appts[labels.IndexOf(selectedLabel)];
+                var appt = appts[labels.IndexOf(selectedLabel)];
 
-        bool done = false;
+                bool done = false;
 
-        while (!done)
-        {
-            
-            var newfield = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title($"Updating appointment for [green]{appt.AnimalName}[/]")
-                    .AddChoices("Date", "Time", "Type", "Notes", "Done"));
-
-            switch (newfield)
-            {
-                case "Date":
-                    appt.Date = AnsiConsole.Prompt(
-                        new TextPrompt<DateTime>("Enter new date (MM/DD/YYYY):")
-                        .Validate(d =>
-                            {
-                                return d >= DateTime.Today
-                                    ? ValidationResult.Success()
-                                    : ValidationResult.Error("[red]Date cannot be in the past[/]");
-                            }));
-                    break;
-
-                case "Time":
-                    appt.Time = AnsiConsole.Prompt(
+                while (!done)
+                {
+                    
+                    var newfield = AnsiConsole.Prompt(
                         new SelectionPrompt<string>()
-                            .Title("Select new time")
-                            .AddChoices("08:00","09:00","10:00", "11:00", "12:00", "01:00", "02:00", "03:00", "04:00"));
-                    break;
+                            .Title($"Updating appointment for [green]{appt.AnimalName}[/]")
+                            .AddChoices("Date", "Time", "Type", "Notes", "Done"));
 
-                case "Type":
-                    appt.Type = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("Select appointment type")
-                            .AddChoices("Vaccine", "Checkup", "Surgery"));
-                    break;
+                    switch (newfield)
+                    {
+                        case "Date":
+                            appt.Date = AnsiConsole.Prompt(
+                                new TextPrompt<DateTime>("Enter new date (MM/DD/YYYY):")
+                                .Validate(d =>
+                                    {
+                                        return d >= DateTime.Today
+                                            ? ValidationResult.Success()
+                                            : ValidationResult.Error("[red]Date cannot be in the past[/]");
+                                    }));
+                            break;
 
-                case "Notes":
-                    appt.Notes = AnsiConsole.Ask<string>("Enter new Veterinarian and Location:");
-                    break;
+                        case "Time":
+                            appt.Time = AnsiConsole.Prompt(
+                                new SelectionPrompt<string>()
+                                    .Title("Select new time")
+                                    .AddChoices("08:00","09:00","10:00", "11:00", "12:00", "01:00", "02:00", "03:00", "04:00"));
+                            break;
 
-                case "Done":
-                    done = true;
-                    break;
-            }
+                        case "Type":
+                            appt.Type = AnsiConsole.Prompt(
+                                new SelectionPrompt<string>()
+                                    .Title("Select appointment type")
+                                    .AddChoices("Vaccine", "Checkup", "Surgery"));
+                            break;
+
+                        case "Notes":
+                            appt.Notes = AnsiConsole.Ask<string>("Enter new Veterinarian and Location:");
+                            break;
+
+                        case "Done":
+                            done = true;
+                            break;
+                    }
 
 
-         }
+                }
 
-                appointmentFileManager.SaveAppointments(appts);
-                Console.WriteLine("Appointment updated.");
-                AnsiConsole.MarkupLine("[green]Appointment updated successfully![/]");
-    }    
+                        appointmentFileManager.SaveAppointments(appts);
+                        Console.WriteLine("Appointment updated.");
+                        AnsiConsole.MarkupLine("[green]Appointment updated successfully![/]");
+            }    
 
         public void ViewAppointments()
-        {
-            AppointmentFileManager appointmentFileManager;
-            appointmentFileManager = new AppointmentFileManager();
+            {
+                AppointmentFileManager appointmentFileManager;
+                appointmentFileManager = new AppointmentFileManager();
+                
+                var appts = appointmentFileManager.LoadAppointments();
+
+                if (appts.Count == 0)
+                {
+                    Console.WriteLine("No appointments found.");
+                    return;
+                }
+
+                foreach (var a in appts)
+                {
+                    Console.WriteLine($"Animal: {a.AnimalName}, Date: {a.Date}, Time: {a.Time}, Type: {a.Type}, Notes: {a.Notes}");
+                }
+            }
             
-            var appts = appointmentFileManager.LoadAppointments();
-
-            if (appts.Count == 0)
-            {
-                Console.WriteLine("No appointments found.");
-                return;
-            }
-
-            foreach (var a in appts)
-            {
-                Console.WriteLine($"Animal: {a.AnimalName}, Date: {a.Date}, Time: {a.Time}, Type: {a.Type}, Notes: {a.Notes}");
-            }
-        }
-        
    
     }

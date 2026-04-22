@@ -10,14 +10,14 @@ namespace AnimalShelter;
 
 
     class Program
-    {
-
-
-        static void Main(string[] args)
         {
-            ConsoleUI theUI = new ConsoleUI();
-            theUI.show();
+
+
+            static void Main(string[] args)
+                {
+                    ConsoleUI theUI = new ConsoleUI();
+                    theUI.show();
+
+                }
 
         }
-
-    }

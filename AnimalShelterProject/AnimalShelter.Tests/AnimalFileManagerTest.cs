@@ -5,6 +5,9 @@ namespace AnimalShelter.Tests
 {
     public class AnimalFileTest
     {
+        
+        //Tests that when the AddAnimal method is used, the data is correctly written to file
+        
         [Fact]
         public void AddAnimal_WritesCorrectFormat_UsingTempDirectory()
         {

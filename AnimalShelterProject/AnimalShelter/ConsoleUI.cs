@@ -49,93 +49,93 @@ public class ConsoleUI {
 
         
          static void ShowStartupScreen()
-        {
-            AnsiConsole.Clear();
+            {
+                AnsiConsole.Clear();
 
-            AnsiConsole.Write(
-                new FigletText("Clara's Animal Shelter")
-                    .Centered()
-                    .Color(Color.CadetBlue));
+                AnsiConsole.Write(
+                    new FigletText("Clara's Animal Shelter")
+                        .Centered()
+                        .Color(Color.CadetBlue));
 
-            AnsiConsole.Write(
-                new Rule("[yellow]Management System[/]")
-                    .RuleStyle("grey")
-                    .Centered());
+                AnsiConsole.Write(
+                    new Rule("[yellow]Management System[/]")
+                        .RuleStyle("grey")
+                        .Centered());
 
-            AnsiConsole.MarkupLine("[grey]Press any key to continue...[/]");
-            Console.ReadKey(true);
-            AnsiConsole.Clear();
-        }
-        
+                AnsiConsole.MarkupLine("[grey]Press any key to continue...[/]");
+                Console.ReadKey(true);
+                AnsiConsole.Clear();
+            }
+            
         
         
         
         public static void AnimalMenu()
-        {
-            Animal animal;
-            animal = new Animal();
-            
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("[green]Animal Management[/]")
-                    .AddChoices("Create Animal", "Update Animal", "Back"));
+            {
+                Animal animal;
+                animal = new Animal();
+                
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[green]Animal Management[/]")
+                        .AddChoices("Create Animal", "Update Animal", "Back"));
 
-            if (choice == "Create Animal") animal.CreateAnimal();
-            if (choice == "Update Animal") animal.UpdateAnimal();
-            if (choice == "Back") return;
-        }
+                if (choice == "Create Animal") animal.CreateAnimal();
+                if (choice == "Update Animal") animal.UpdateAnimal();
+                if (choice == "Back") return;
+            }
 
         public static void AppointmentMenu()
-        {
-            Appointment appointment;
-            appointment = new Appointment();
+            {
+                Appointment appointment;
+                appointment = new Appointment();
 
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("[green]Appointment Management[/]")
-                    .AddChoices("Create Appointment", "Update Appointment", "View Appointments", "Back"));
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[green]Appointment Management[/]")
+                        .AddChoices("Create Appointment", "Update Appointment", "View Appointments", "Back"));
 
-            if (choice == "Create Appointment") appointment.CreateAppointment();
-            if (choice == "Update Appointment") appointment.UpdateAppointment();
-            if (choice == "View Appointments") appointment.ViewAppointments();
-            if (choice == "Back") return;
-        }
+                if (choice == "Create Appointment") appointment.CreateAppointment();
+                if (choice == "Update Appointment") appointment.UpdateAppointment();
+                if (choice == "View Appointments") appointment.ViewAppointments();
+                if (choice == "Back") return;
+            }
 
         public static void ReportingMenu()
-        {
-            ReportManager reportManager;
-            reportManager = new ReportManager();
-            
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("[blue]Reporting[/]")
-                    .AddChoices(
-                        "Animals Ready to Adopt",
-                        "Animals Needing Vaccines",
-                        "Upcoming Appointments by Date Range + Species",
-                        "Back"));
-
-            switch (choice)
             {
-            case "Animals Ready to Adopt":
+                ReportManager reportManager;
+                reportManager = new ReportManager();
+                
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[blue]Reporting[/]")
+                        .AddChoices(
+                            "Animals Ready to Adopt",
+                            "Animals Needing Vaccines",
+                            "Upcoming Appointments by Date Range + Species",
+                            "Back"));
 
-                    reportManager.ReportAnimalsAdoptable();
-                    break;
-                    
-            case "Animals Needing Vaccines":
+                switch (choice)
+                {
+                case "Animals Ready to Adopt":
 
-                    reportManager.ReportAnimalsNeedingVaccines();                
-                    break;
-
-            case "Upcoming Appointments by Date Range + Species":
-
-                    reportManager.ReportAppointmentsByDateRangeAndSpecies();
-                    break;
-
-            case "Back": return;
-            
+                        reportManager.ReportAnimalsAdoptable();
+                        break;
                         
-            }
-        }   
+                case "Animals Needing Vaccines":
+
+                        reportManager.ReportAnimalsNeedingVaccines();                
+                        break;
+
+                case "Upcoming Appointments by Date Range + Species":
+
+                        reportManager.ReportAppointmentsByDateRangeAndSpecies();
+                        break;
+
+                case "Back": return;
+                
+                            
+                }
+            }   
    
     }
